@@ -1,6 +1,8 @@
+const { pages } = require('../po/index');
+
 describe('Module 7: Advanced Configuration', () => {
     beforeEach(async () => {
-      await browser.url('/showcase/angular/appointmentplanner/#/dashboard');
+      await pages('dashboard').open();
     });
   
     it('should open page', async () => {
@@ -9,37 +11,32 @@ describe('Module 7: Advanced Configuration', () => {
     });
   
     it('should open modal', async () => {
-      await $("[routerlink='/doctors']").click();
-      await $('.specialization-types button.e-control').click();
-      await expect($('#_dialog-content')).toBeDisplayed();
+      await pages('dashboard').sideMenu.item('doctors').click();
+      await pages('doctors').doctorListHeader.addDoctorBtn.click();
+      await expect(pages('doctors').addDoctorPopup.rootEl).toBeDisplayed();
     });
   
     it('should add doctor', async () => {
-      await $("[routerlink='/doctors']").waitForDisplayed();
-      await $("[routerlink='/doctors']").click();
-      await $('.specialization-types button.e-control').click();
-      await $('#Name input').setValue('John Doe');
-      await $('input#DoctorMobile').setValue('1111111111');
-      await $("input[name='Email']").setValue('test@test.com');
-      await $("input[name='Education']").setValue('Basic');
-      await $("input[name='Designation']").setValue('Test');
-      await $('.button-container button.e-primary').click();
-      await expect($('#_dialog-content')).not.toBeDisplayed();
+      await pages('dashboard').sideMenu.item('doctors').waitForDisplayed();
+      await pages('dashboard').sideMenu.item('doctors').click();
+      await pages('doctors').doctorListHeader.addDoctorBtn.click();
+      await pages('doctors').addDoctorPopup.input('name').setValue('John Doe');
+      await pages('doctors').addDoctorPopup.input('phone').setValue('1111111111');
+      await pages('doctors').addDoctorPopup.input('email').setValue('test@test.com');
+      await pages('doctors').addDoctorPopup.input('education').setValue('Basic');
+      await pages('doctors').addDoctorPopup.input('designation').setValue('Test');
+      await pages('doctors').addDoctorPopup.submitButton.click();
+      await expect(pages('doctors').addDoctorPopup.rootEl).not.toBeDisplayed();
   
-      const card = await $('#Specialist_8');
-  
-      //intentional fail to check the screenshot
-      await expect(card.$('.name')).toHaveTextContaining('John Doe');
-      await expect(card.$('.education')).toHaveTextContaining('Basic', {
-        ignoreCase: true,
-      });
+      await expect(pages('doctors').specialistCard(8).name).toHaveText('Dr. John Doe')
+      await expect(pages('doctors').specialistCard(8).education).toHaveText('Basic', {ignoreCase: true})
     });
   
     it('should close modal', async () => {
-      await $("[routerlink='/doctors']").waitForDisplayed();
-      await $("[routerlink='/doctors']").click();
-      await $('.specialization-types button.e-control').click();
-      await $('.button-container button.e-btn:not(.e-primary)').click();
-      await expect($('#_dialog-content')).not.toBeDisplayed();
+      await pages('dashboard').sideMenu.item('doctors').waitForDisplayed();
+      await pages('dashboard').sideMenu.item('doctors').click();
+      await pages('doctors').doctorListHeader.addDoctorBtn.click();
+      await pages('doctors').addDoctorPopup.cancelButton.click();
+      await expect(pages('doctors').addDoctorPopup.rootEl).not.toBeDisplayed();
     });
   });
