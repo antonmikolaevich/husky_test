@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "wdio run ./wdio.conf.js"
+    "test": "wdio run ./wdio.conf.js",
+    "prepare": "husky install",
+    "lint": "eslint ./ --fix"
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +17,9 @@
     "@wdio/spec-reporter": "^8.3.0",
     "chromedriver": "^110.0.0",
     "wdio-chromedriver-service": "^8.1.1"
+  },
+  "dependencies": {
+    "eslint": "^8.41.0",
+    "husky": "^8.0.3"
   }
 }
