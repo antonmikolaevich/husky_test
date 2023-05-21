@@ -5,8 +5,8 @@ describe('Module 7: Advanced Configuration', () => {
       await pages('dashboard').open();
     });
   
-    it('should open page', async () => {
-            const pageTitle = await browser.getTitle();
+  it('should open page', async () => {
+      const pageTitle = await browser.getTitle();
       expect(pageTitle).toEqual('Appointment Planner - Syncfusion Angular Components Showcase App');
     });
   
