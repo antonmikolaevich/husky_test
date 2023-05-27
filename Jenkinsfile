@@ -10,8 +10,13 @@ pipeline {
 
         stage('UI') {
             steps {
-                bat 'npm run wdio'
+                bat 'npm run test'
             }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: '*.xml'
         }
     }
 }
