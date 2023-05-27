@@ -22,8 +22,8 @@ pipeline {
     post {
         always {
             junit allowEmptyResults: true, testResults: '*.xml'
-            junit allowEmptyResults: true, testResults: 'reports/html-reports/*.html'
             archiveArtifacts artifacts: '*.xml'
+            archiveArtifacts artifacts: 'reports/html-reports/*.html'
         }
     }
 }
