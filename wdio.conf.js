@@ -1,4 +1,5 @@
-
+const log4js = require('@log4js-node/log4js-api');
+//const logger = log4js.getLogger(this.options.debug ? 'debug' : 'default');
 
 exports.config = {
     //
@@ -141,7 +142,22 @@ exports.config = {
         outputFileFormat: function() { // optional
             return `results-.xml`
         }
-    }]
+    }], ["html-nice", {
+        outputDir: './reports/html-reports/',
+        filename: 'report.html',
+        reportTitle: 'Test Report Title',
+        linkScreenshots: true,
+        //to show the report in a browser when done
+        showInBrowser: true,
+        collapseTests: false,
+        //to turn on screenshots after every test
+        useOnAfterCommandForScreenshot: false,
+
+        //to initialize the logger
+        LOG: log4js.getLogger("default")
+    }
+]
+
 ],
 
 
@@ -166,8 +182,17 @@ exports.config = {
      * @param {Object} config wdio configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      */
-    // onPrepare: function (config, capabilities) {
-    // },
+    onPrepare: function (config, capabilities) {
+
+        reportAggregator = new ReportGenerator({
+            outputDir: './reports/html-reports/',
+            filename: 'master-report.html',
+            reportTitle: 'Master Report',
+            browserName: capabilities.browserName,
+            collapseTests: true
+        });
+        reportAggregator.clean();
+    },
     /**
      * Gets executed before a worker process is spawned and can be used to initialise specific service
      * for that worker as well as modify runtime environments in an async fashion.
@@ -291,8 +316,11 @@ exports.config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
-    // onComplete: function(exitCode, config, capabilities, results) {
-    // },
+    onComplete: function (exitCode, config, capabilities, results) {
+        (async () => {
+            await reportAggregator.createReport();
+        })();
+    }
     /**
     * Gets executed when a refresh happens.
     * @param {String} oldSessionId session ID of the old session

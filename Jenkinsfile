@@ -13,10 +13,16 @@ pipeline {
                 bat 'npm run test'
             }
         }
+        stage('WDIO-Nice-Report'){
+            steps {
+                bat 'npm run report'
+            }
+        }
     }
     post {
         always {
             junit allowEmptyResults: true, testResults: '*.xml'
+            junit allowEmptyResults: true, testResults: 'reports/html-reports/*.html'
             archiveArtifacts artifacts: '*.xml'
         }
     }
